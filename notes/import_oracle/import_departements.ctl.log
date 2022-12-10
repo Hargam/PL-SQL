@@ -1,0 +1,54 @@
+
+SQL*Loader: Release 19.0.0.0.0 - Production on Ven. Déc. 2 10:59:36 2022
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Fichier de contrôle :   import_departements.ctl.txt
+Fichier de données :      departements-france.csv
+  Fichier des enregistrements refusés :     departements-france.bad
+  Fichier de rebut :  aucune spécification
+
+ (Allouer tous les rebuts)
+
+Nombre à charger : ALL
+Nombre à ignorer : 0
+Erreurs autorisés : 50
+Tableau de variables :     250 lignes, maximum de 1048576 octets
+Continuation :    aucune spécification
+Chemin utilisé:      Classique
+
+Table DEPARTEMENTS, chargé à partir de chaque enregistrement physique.
+Option d'insertion en vigueur pour cette table : INSERT
+
+   Nom de colonne                  Position   Long  Type de données encadr.
+------------------------------ ---------- ----- ---- ---- ---------------------
+CODE_DEPARTEMENT                    FIRST     *   ,       CHARACTER            
+NOM_DEPARTEMENT                      NEXT     *   ,       CHARACTER            
+CODE_REGION                          NEXT     *   ,       CHARACTER            
+NOM_REGION                           NEXT     *   ,       CHARACTER            
+
+Enregistrement 1 : Rejeté - Erreur sur table DEPARTEMENTS, colonne CODE_DEPARTEMENT.
+ORA-12899: valeur trop grande pour la colonne "HR"."DEPARTEMENTS"."CODE_DEPARTEMENT" (réelle : 16, maximum : 3)
+
+
+Table DEPARTEMENTS :
+  Chargement de 101 Lignes effectué.
+  1 Ligne : chargement impossible dû à des erreurs de données.
+  0 Lignes : chargement impossible car échec de toutes les clauses WHEN.
+  0 Lignes : chargement impossible car tous les champs étaient non renseignés.
+
+
+Espace affecté au tableau de variables :                 258000 octets(250 lignes)
+Octets de tampon de lecture : 1048576
+
+Nombre total d'enregistrements logiques ignorés :          0
+Nombre total d'enregistrements logiques lus :           102
+Nombre total d'enregistrements logiques rejetés :         1
+Nombre total d'enregistrements logiques mis au rebut :        0
+
+Le début de l'exécution a été effectué sur Ven. Déc.  02 10:59:36 2022
+La fin de l'exécution a été effectuée sur Ven. Déc.  02 10:59:38 2022
+
+Temps écoulé (ELAPSED) :     00:00:02.87
+Temps processeur (CPU) :    00:00:00.04

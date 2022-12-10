@@ -1,0 +1,71 @@
+--- exemple de création de contrainte APRES CREATION DE LA TABLE
+
+-- supprimer la table test
+drop table test;
+
+-- créer une table de test
+create table test (id int, valeur varchar(20)); -- ici on n'a pas spcécifier de PK (PK = clé primaire)
+
+-- création de PK 
+alter table test add (constraint PK_test primary key (id));
+
+-- créer une contraint AU MOMENT DE LA CREATION DE LA TABLE
+-- cas 1 : SANS NOMMER LA CONTRAINTE
+drop table test;
+
+create table test (id number(5) primary key, nom varchar(20) not null); -- syntaxe : ATTRIBUT TYPE  [Containte]  
+-- vérifier la contrainte de PK
+insert into test values (1,'toto');
+insert into test values (1,'coco');
+
+-- contrainte de PK = 2 conditions Not null et Unique
+-- cas 2 NOMMER LES CONTRAINTES 
+
+drop table test;
+create table test (
+    id number(5) constraint pk_test primary key,
+    nom varchar(20) constraint nom_nonNull not null);
+
+-- peupler la table
+insert into test values (1,'toto');
+insert into test values (1,'coco');
+insert into test (id) values (2);
+
+--- Autres exemples de contraintes : 
+create table test2 (
+    id int primary key, 
+    nom varchar(50),
+    age number constraint Age_SUPA7 check(age > 7)
+    );
+
+-- vérifier la contrainte
+insert into test2 values (2,'nom 2',8);
+
+insert into test2 values (3,'nom 3',6);
+-- encore un exemple de contrainte
+
+    create table test3 (
+    id int primary key, 
+    nom varchar(50),
+    age number constraint Test3_Age_SUPA7 check(age > 7),
+    email varchar2(50) unique
+    );
+
+insert into test3 values (1,'nom 1',60, 'mail3@site.com');
+insert into test3 values (2,'nom 2',50, 'mail3@site.com');
+
+-- exemple en utilisant alter
+-- on va ajouter une colonne + contrainte
+alter table test3 add( codePostale char(6) );
+
+-- Si on veut ajouter un champ avec une CONTRAINTE NOT NULL alors la table doit etre vide
+alter table test3 add( rue varchar(60)  not null);
+
+-- la requete précédante retourne une erreur car la table n'est pas vide, en effet
+select * from test3;
+
+--- Pour ajouter la contrainte, il faut supprimer les enregistrement de la table
+delete from test3;
+alter table test3 add( rue varchar(60)  not null);
+
+

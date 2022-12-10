@@ -1,0 +1,5 @@
+load data
+infile 'departements-france.csv'
+into table departements
+fields terminated by ','
+(code_departement ,nom_departement ,code_region ,nom_region)

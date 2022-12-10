@@ -1,0 +1,15 @@
+Clid droit sur la BDD + Gérer la base de données
+1 -- Rechercher les fichiers:
+
+SELECT TABLESPACE_NAME
+          ,FILE_ID
+          ,FILE_NAME
+          ,STATUS
+    FROM   DBA_DATA_FILES;
+
+
+2 -- Ajouter un nouveau fichier physique
+
+ALTER TABLESPACE SYSTEM 
+ADD DATAFILE 
+'C:\ORACLE_SETUP\ORADATA\ORCL\SYSTEM02.DBF' size 200M autoextend on next 10M maxsize 250M ;

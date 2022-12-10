@@ -1,0 +1,185 @@
+
+
+create table test (id int primary key,
+nom varchar(50));
+
+-- peupler la table 
+insert into test values (1,'nom 1');
+insert into test values (2,'nom 2');
+---- comment se servir des tables HR 
+-- HR est une base de données de formation mise à disposition par Oracle
+REM ********************************************************************
+REM Create the REGIONS table to hold region information for locations
+REM HR.LOCATIONS table has a foreign key to this table.
+
+Prompt ******  Creating REGIONS table ....
+
+CREATE TABLE regions
+    ( region_id      NUMBER 
+       CONSTRAINT  region_id_nn NOT NULL 
+    , region_name    VARCHAR2(25) 
+    );
+
+CREATE UNIQUE INDEX reg_id_pk
+ON regions (region_id);
+
+ALTER TABLE regions
+ADD ( CONSTRAINT reg_id_pk
+       		 PRIMARY KEY (region_id)
+    ) ;
+    
+------------------- vérifier l'existance de la table
+describe regions;
+--------------------
+REM ********************************************************************
+REM Create the COUNTRIES table to hold country information for customers
+REM and company locations. 
+REM OE.CUSTOMERS table and HR.LOCATIONS have a foreign key to this table.
+
+Prompt ******  Creating COUNTRIES table ....
+
+CREATE TABLE countries 
+    ( country_id      CHAR(2) 
+       CONSTRAINT  country_id_nn NOT NULL 
+    , country_name    VARCHAR2(40) 
+    , region_id       NUMBER 
+    , CONSTRAINT     country_c_id_pk 
+        	     PRIMARY KEY (country_id) 
+    ) 
+    ORGANIZATION INDEX; 
+
+ALTER TABLE countries
+ADD ( CONSTRAINT countr_reg_fk
+        	 FOREIGN KEY (region_id)
+          	  REFERENCES regions(region_id) 
+    ) ;
+
+---------------------------
+
+REM ********************************************************************
+REM Create the LOCATIONS table to hold address information for company departments.
+REM HR.DEPARTMENTS has a foreign key to this table.
+
+Prompt ******  Creating LOCATIONS table ....
+
+CREATE TABLE locations
+    ( location_id    NUMBER(4)
+    , street_address VARCHAR2(40)
+    , postal_code    VARCHAR2(12)
+    , city       VARCHAR2(30)   NOT NULL
+    , state_province VARCHAR2(25)
+    , country_id     CHAR(2)
+    ) ;
+    insert into locations (location_id,street_address,city) values (4,'Rue du Parc', 'Melun');
+   insert into locations (location_id,street_address,city) values (4,'Rue du Parc', null);
+ insert into locations (location_id,street_address) values (4,'Rue du Parc');
+ 
+ -- expliciter les contraintes pour avoir avoir des messages plus claires
+ -- supprimer la table et la recréer 
+ drop table locations;
+ 
+ CREATE TABLE locations
+    ( location_id    NUMBER(4)
+    , street_address VARCHAR2(40)
+    , postal_code    VARCHAR2(12)
+    , city       VARCHAR2(30) 	CONSTRAINT     loc_city_nn  NOT NULL
+    , state_province VARCHAR2(25)
+    , country_id     CHAR(2)
+    ) ;
+    
+     insert into locations (location_id,street_address) values (4,'Rue du Parc');
+     -- conclusion : expliciter les contraintes pour avoir des messages plus claires
+     
+ select * from locations;
+
+CREATE UNIQUE INDEX loc_id_pk
+ON locations (location_id) ;
+
+ALTER TABLE locations
+ADD ( CONSTRAINT loc_id_pk
+       		 PRIMARY KEY (location_id)
+    , CONSTRAINT loc_c_id_fk
+       		 FOREIGN KEY (country_id)
+        	  REFERENCES countries(country_id) 
+    ) ;
+--- exemple de création de contrainte APRES CREATION DE LA TABLE
+-- supprimer la table test
+drop table test;
+-- créer une table de test
+create table test (id int, valeur varchar(20)); -- ici on n'a pas spcécifier de PK (PK = clé primaire)
+-- création de PK 
+alter table test add (constraint PK_test primary key (id));
+-- créer une contraint AU MOMENT DE LA CREATION DE LA TABLE
+-- cas 1 : SANS NOMMER LA CONTRAINTE
+drop table test;
+create table test (id number(5) primary key, nom varchar(20) not null); -- syntaxe : ATTRIBUT TYPE  [Containte]  
+-- vérifier la contrainte de PK
+insert into test values (1,'toto');
+insert into test values (1,'coco');
+-- contrainte de PK = 2 conditions Not null et Unique
+-- cas 2 NOMMER LES CONTRAINTES 
+drop table test;
+create table test (
+    id number(5) constraint pk_test primary key,
+    nom varchar(20) constraint nom_nonNull not null);
+-- peupler la table
+insert into test values (1,'toto');
+insert into test values (1,'coco');
+insert into test (id) values (2);
+--- Autres exemples de contraintes : 
+create table test2 (
+    id int primary key, 
+    nom varchar(50),
+    age number constraint Age_SUPA7 check(age > 7)
+    );
+-- vérifier la contrainte
+insert into test2 values (2,'nom 2',8);
+
+insert into test2 values (3,'nom 3',6);
+-- encore un exemple de contrainte
+
+    create table test3 (
+    id int primary key, 
+    nom varchar(50),
+    age number constraint Test3_Age_SUPA7 check(age > 7),
+    email varchar2(50) unique
+    );
+insert into test3 values (1,'nom 1',60, 'mail3@site.com');
+insert into test3 values (2,'nom 2',50, 'mail3@site.com');
+-- exemple en utilisant alter
+-- on va ajouter une colonne + contrainte
+alter table test3 add( codePostale char(6) );
+-- Si on veut ajouter un champ avec une CONTRAINTE NOT NULL alors la table doit etre vide
+alter table test3 add( rue varchar(60)  not null);
+-- la requete précédante retourne une erreur car la table n'est pas vide, en effet
+select * from test3;
+--- Pour ajouter la contrainte, il faut supprimer les enregistrement de la table
+delete from test3;
+alter table test3 add( rue varchar(60)  not null);
+
+
+
+
+Rem 	Useful for any subsequent addition of rows to locations table
+Rem 	Starts with 3300
+
+CREATE SEQUENCE locations_seq
+ START WITH     3300
+ INCREMENT BY   100
+ MAXVALUE       9900
+ NOCACHE
+ NOCYCLE;
+----------------- les séquences : utilité pour créer des compteur ou index - champs auto-incrémenté
+-- Exemple :
+create table test4 (id  int generated by default as identity primary key, nom varchar(20));
+insert into test4(nom) values ('nom_1');
+
+
+create sequence test6_seq start with 10 increment by 20 ;
+create table test6 (id int default test6_seq.nextval, champ1 varchar(50));
+-- vérif
+insert into test6 (champ1) values ('valeur 1');
+insert into test6 (champ1) values ('valeur 2');
+select * from test6;
+
+

@@ -1,0 +1,1 @@
+sqlldr HR/hr control=import_departements.ctl.txt
